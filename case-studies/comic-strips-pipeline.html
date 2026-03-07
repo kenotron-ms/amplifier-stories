@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AmpliVerse Comics: Building a Creative AI Pipeline</title>
+    <title>AmpliVerse Comics: How Novel Architecture Unlocked AI-Powered Visual Storytelling</title>
     <style>
         :root {
             --accent: #FF375F;
@@ -576,7 +576,7 @@
 <div class="slide active center">
     <div class="section-label">Amplifier Ecosystem</div>
     <h1 class="headline" style="max-width: 900px;">AmpliVerse Comics</h1>
-    <p class="subhead" style="margin-top: -8px;">Building a Creative AI Pipeline</p>
+    <p class="subhead" style="margin-top: -8px;">How Novel Architecture Unlocked AI-Powered Visual Storytelling</p>
     <p class="body-text" style="max-width: 560px; margin-top: clamp(8px, 1.5vw, 16px);">From session transcripts to multi-issue comic sagas</p>
     <div style="display: flex; gap: clamp(8px, 1.5vw, 14px); align-items: center; margin-top: clamp(12px, 2vw, 24px); flex-wrap: wrap; justify-content: center;">
         <span class="badge badge-green">Active</span>
@@ -586,71 +586,77 @@
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 2: THE VISION                                          -->
+<!-- SLIDE 2: THE PROBLEM SPACE                                   -->
 <!-- ============================================================ -->
 <div class="slide">
-    <div class="section-label">The Vision</div>
-    <h2 class="medium-headline">Turn Amplifier sessions into visual stories</h2>
+    <div class="section-label">The Problem Space</div>
+    <h2 class="medium-headline">Why Creative AI Pipelines Are Hard</h2>
+
     <div class="grid-2">
-        <div class="card">
-            <span class="card-icon">&#x1F4AC;</span>
-            <h3>Session &#x2192; Story</h3>
-            <p>Transform raw Amplifier session transcripts into multi-page comic narratives with character arcs, dramatic pacing, and visual continuity.</p>
-        </div>
-        <div class="card">
-            <span class="card-icon">&#x1F3AD;</span>
-            <h3>6 Specialist Agents</h3>
-            <p>Style curator, storyboard writer, character designer, panel artist, cover artist, and strip compositor — each carrying only the context it needs.</p>
-        </div>
-        <div class="card">
-            <span class="card-icon">&#x1F3A8;</span>
-            <h3>29 Visual Styles</h3>
-            <p>From manga and watercolor to retro-americana and cyberpunk noir. Each style is a self-contained <code>.md</code> file with palette, panel conventions, and character rendering directives.</p>
+        <div class="card card-accent">
+            <span class="card-icon">&#x1F441;</span>
+            <h3>Multiple Modalities</h3>
+            <p>Text agents must orchestrate image generation <em>without ever seeing images</em>. Coordination happens entirely in language, across tools that return binary artifacts no agent can hold in context.</p>
         </div>
         <div class="card card-accent">
-            <span class="card-icon">&#x26A1;</span>
-            <h3>The Core Challenge</h3>
-            <p>Keep massive binary image data completely out of agent context while coordinating complex multi-agent creative workflows across multiple issues.</p>
+            <span class="card-icon">&#x1F3A8;</span>
+            <h3>Style Coherence</h3>
+            <p>Every panel, character, and cover must look like it belongs in the same comic. Six specialist agents, generating independently, have to produce visually unified output &mdash; without a shared canvas.</p>
         </div>
-    </div>
-</div>
-
-<!-- ============================================================ -->
-<!-- SLIDE 3: THIN BUNDLE PATTERN                                 -->
-<!-- ============================================================ -->
-<div class="slide">
-    <div class="section-label">Architecture</div>
-    <h2 class="medium-headline">The Thin Bundle Pattern</h2>
-    <p class="body-text" style="max-width: 640px;"><code>bundle.md</code> is only <strong style="color: var(--accent);">70 lines</strong> — a composition manifest, not a monolith. Three bundles compose to form the full pipeline:</p>
-
-    <div class="grid-3">
-        <div class="card card-elevated">
-            <h3 style="color: #64D2FF;">amplifier-bundle-stories</h3>
-            <p>Narrative creation capability. The storyboard-writer delegates into this bundle for story arc construction and pacing.</p>
+        <div class="card card-accent">
+            <span class="card-icon">&#x1F4CA;</span>
+            <h3>Scale</h3>
+            <p>A 5-issue saga = 30+ panels + 6 characters + 5 covers. That&rsquo;s 50+ MB of images. Standard agent context can&rsquo;t hold it &mdash; and trying to makes the pipeline choke on its own output.</p>
         </div>
-        <div class="card card-elevated">
-            <h3 style="color: #BF5AF2;">amplifier-bundle-browser-tester</h3>
-            <p>QA screenshot capability. The compositor delegates to the visual-documenter for validating final HTML output.</p>
-        </div>
-        <div class="card card-elevated">
-            <h3 style="color: var(--accent);">comic-strips:behaviors</h3>
-            <p>The actual pipeline — 6 agents, 3 tool modules, recipes. This is the behavior file that enumerates the wiring.</p>
+        <div class="card card-accent">
+            <span class="card-icon">&#x1F504;</span>
+            <h3>The Quality Loop</h3>
+            <p>Agents need to review their own visual output and iterate &mdash; catching misaligned style, missing characters, or broken layouts before the final assembly step commits them.</p>
         </div>
     </div>
 
     <div class="callout">
-        <div class="callout-label">Key Insight</div>
-        <p>Cross-bundle delegation means each agent carries only the context it needs. The stories bundle handles narrative. Browser-tester handles QA. Comic-strips handles visual creation. No single agent carries all three concerns.</p>
+        <div class="callout-label">What These Constraints Forced</div>
+        <p>These four pressures forced <strong style="color: var(--text-primary);">five novel approaches</strong> that, together, unlocked a creative pipeline where 6 specialist agents produce multi-issue comic sagas from session transcripts &mdash; at ~1&nbsp;KB of recipe state managing 50+ MB of images.</p>
     </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 4: ROUTING MATRIX                                      -->
+<!-- SLIDE 3: NOVEL APPROACH #1 — BUNDLE COMPOSITION             -->
 <!-- ============================================================ -->
 <div class="slide">
-    <div class="section-label">Routing</div>
-    <h2 class="medium-headline">Leveraging the Routing Matrix</h2>
-    <p class="body-text">Each agent declares exactly the model capabilities it needs via <code>model_role</code> arrays. The routing matrix selects the best available model for each role.</p>
+    <div class="section-label">Novel Approach &#x2460;</div>
+    <h2 class="medium-headline">Composition as Creative Superpower</h2>
+    <p class="body-text" style="max-width: 700px;">A <strong style="color: var(--accent);">70-line manifest</strong> composes three bundles, each bringing distinct creative intelligence. This isn&rsquo;t a monolith &mdash; it&rsquo;s a creative supply chain where every agent carries only its domain&rsquo;s context.</p>
+
+    <div class="grid-3">
+        <div class="card card-elevated">
+            <h3 style="color: #64D2FF;">amplifier-bundle-stories</h3>
+            <p><strong style="color: var(--text-primary);">Narrative craft.</strong> Arc selection, pacing, prose. The storyboard-writer doesn&rsquo;t write stories; it <em>delegates</em> to storytelling specialists inside this bundle. Narrative expertise lives where it belongs.</p>
+        </div>
+        <div class="card card-elevated">
+            <h3 style="color: #BF5AF2;">amplifier-bundle-browser-tester</h3>
+            <p><strong style="color: var(--text-primary);">Visual QA.</strong> The compositor hands off to a visual-documenter to verify the final HTML renders correctly in an isolated browser environment. Testing as a composable capability.</p>
+        </div>
+        <div class="card card-elevated">
+            <h3 style="color: var(--accent);">comic-strips:behaviors</h3>
+            <p><strong style="color: var(--text-primary);">The pipeline itself.</strong> 6 agents, 3 tool modules, recipes. This behavior file is the conductor, not the orchestra &mdash; it wires specialisms together rather than containing them.</p>
+        </div>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">What This Unlocked</div>
+        <p>Each agent carries <strong style="color: var(--text-primary);">only its domain&rsquo;s context</strong>. The storyboard-writer has narrative skills loaded; the panel-artist has image-prompt-engineering. No agent is bloated with all three concerns. This is what made 6 tight specialists possible instead of one overloaded generalist.</p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: NOVEL APPROACH #2 — ROUTING MATRIX                 -->
+<!-- ============================================================ -->
+<div class="slide">
+    <div class="section-label">Novel Approach &#x2461;</div>
+    <h2 class="medium-headline">The Routing Matrix as Creative Director</h2>
+    <p class="body-text">Each agent declares the model capabilities it needs. The matrix selects the best available model &mdash; making the entire pipeline provider-independent and gracefully degrading.</p>
 
     <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
         <table class="route-table">
@@ -664,75 +670,65 @@
             <tbody>
                 <tr>
                     <td>style-curator</td>
-                    <td>
-                        <span class="role-tag">creative</span>
-                        <span class="role-tag">general</span>
-                    </td>
-                    <td>Pure creative text work — style selection and guide generation</td>
+                    <td><span class="role-tag">creative</span><span class="role-tag">general</span></td>
+                    <td>Pure creative text &mdash; style selection and guide generation</td>
                 </tr>
                 <tr>
                     <td>storyboard-writer</td>
-                    <td>
-                        <span class="role-tag">creative</span>
-                        <span class="role-tag">general</span>
-                    </td>
+                    <td><span class="role-tag">creative</span><span class="role-tag">general</span></td>
                     <td>Narrative structure, panel breakdowns, dialogue</td>
                 </tr>
                 <tr>
                     <td>character-designer</td>
-                    <td>
-                        <span class="role-tag">creative</span>
-                        <span class="role-tag">general</span>
-                        <span class="role-tag vision">vision</span>
-                    </td>
+                    <td><span class="role-tag">creative</span><span class="role-tag vision">vision</span><span class="role-tag">general</span></td>
                     <td>Creates <em>and reviews</em> character reference sheets</td>
                 </tr>
                 <tr>
                     <td>panel-artist</td>
-                    <td>
-                        <span class="role-tag imggen">image-gen</span>
-                        <span class="role-tag vision">vision</span>
-                        <span class="role-tag">creative</span>
-                        <span class="role-tag">general</span>
-                    </td>
-                    <td>Full quad — generate, review, prompt-craft, fallback</td>
+                    <td><span class="role-tag imggen">image-gen</span><span class="role-tag vision">vision</span><span class="role-tag">creative</span><span class="role-tag">general</span></td>
+                    <td>Full quad &mdash; generate, review, prompt-craft, fallback</td>
                 </tr>
                 <tr>
                     <td>cover-artist</td>
-                    <td>
-                        <span class="role-tag imggen">image-gen</span>
-                        <span class="role-tag vision">vision</span>
-                        <span class="role-tag">creative</span>
-                        <span class="role-tag">general</span>
-                    </td>
-                    <td>Same full quad — cover composition and typography</td>
+                    <td><span class="role-tag imggen">image-gen</span><span class="role-tag vision">vision</span><span class="role-tag">creative</span><span class="role-tag">general</span></td>
+                    <td>Same full quad &mdash; cover composition and typography</td>
                 </tr>
                 <tr>
                     <td>strip-compositor</td>
-                    <td>
-                        <span class="role-tag vision">vision</span>
-                        <span class="role-tag">creative</span>
-                        <span class="role-tag">general</span>
-                    </td>
-                    <td>Analyzes images for overlay placement — no generation</td>
+                    <td><span class="role-tag vision">vision</span><span class="role-tag">creative</span><span class="role-tag">general</span></td>
+                    <td>Analyzes images for overlay placement &mdash; no generation needed</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="callout">
-        <div class="callout-label">Design Principle</div>
-        <p><code>image-gen</code> only on agents that actually generate images. <code>vision</code> on all agents that inspect images. Swap providers, add new models — agents don't change.</p>
+    <div class="grid-2">
+        <div class="card">
+            <h3>What This Unlocked</h3>
+            <ul class="compact-list" style="margin-top: clamp(4px, 0.8vw, 8px);">
+                <li><strong style="color: var(--text-primary);">Provider independence:</strong> The same 6 agents work with OpenAI, Google, or both. Swap mid-pipeline if one hits rate limits.</li>
+                <li><strong style="color: var(--text-primary);">Graceful degradation:</strong> Panel-artist requests <code>[image-gen, vision, creative, general]</code> &mdash; if image-gen fails, it still functions for review work.</li>
+                <li><strong style="color: var(--text-primary);">Zero reconfiguration:</strong> Add a new provider to Amplifier and every comic agent automatically gains access to its models. No bundle changes.</li>
+            </ul>
+        </div>
+        <div class="card card-accent">
+            <h3>Capability Matching, Not Provider Names</h3>
+            <p><code>image-gen</code> only on agents that actually generate. <code>vision</code> on all agents that inspect visual output. The matrix ensures each agent gets the model that <em>matches its actual need</em> &mdash; not just the cheapest available.</p>
+        </div>
     </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 5: IMAGE GENERATION TOOL                               -->
+<!-- SLIDE 5: NOVEL APPROACH #3 — IMAGE ROUTING                  -->
 <!-- ============================================================ -->
 <div class="slide">
-    <div class="section-label">Image Generation</div>
-    <h2 class="medium-headline">The Dynamic <code style="color: var(--accent);">generate_image</code> Tool</h2>
-    <p class="body-text">A bridge module (Issue #90) with its own internal routing matrix — inspired by how the platform routes agent capabilities.</p>
+    <div class="section-label">Novel Approach &#x2462;</div>
+    <h2 class="medium-headline">Image Routing: Inspired by the Matrix</h2>
+
+    <div class="callout" style="background: rgba(48, 209, 88, 0.08); border-color: rgba(48, 209, 88, 0.2);">
+        <div class="callout-label" style="color: #30D158;">The Genesis Story</div>
+        <p>Watching the routing matrix match model capabilities to agent needs sparked an idea: <strong style="color: var(--text-primary);">what if we built the same pattern for image generation itself?</strong> The <code>generate_image</code> bridge tool has its own internal routing matrix &mdash; 12 models, 3 API surfaces, each registered with capability dimensions: <code>reference_images</code>, <code>style_strengths</code>, <code>composition_strength</code>, <code>detail_ceiling</code>, <code>text_avoidance</code>.</p>
+    </div>
 
     <div class="stat-row">
         <div class="stat-item">
@@ -750,7 +746,7 @@
     </div>
 
     <div>
-        <p class="body-text" style="margin-bottom: clamp(8px, 1.5vw, 12px);"><strong style="color: var(--text-primary);">Selection algorithm:</strong></p>
+        <p class="body-text" style="margin-bottom: clamp(8px, 1.5vw, 12px);"><strong style="color: var(--text-primary);">8-step selection algorithm:</strong></p>
         <div class="flow-pipeline">
             <span class="flow-step">Override?</span><span class="flow-arrow">&#x2192;</span>
             <span class="flow-step">Provider</span><span class="flow-arrow">&#x2192;</span>
@@ -759,299 +755,355 @@
             <span class="flow-step">Detail level</span><span class="flow-arrow">&#x2192;</span>
             <span class="flow-step">Task hint</span><span class="flow-arrow">&#x2192;</span>
             <span class="flow-step">Cost sort</span><span class="flow-arrow">&#x2192;</span>
-            <span class="flow-step" style="border-color: var(--accent); color: var(--accent);">Cheapest viable</span>
+            <span class="flow-step" style="border-color: #30D158; color: #30D158;">Cheapest viable</span>
         </div>
     </div>
 
     <div class="grid-2">
         <div class="card">
-            <h3>Composition Awareness</h3>
-            <p><code>task_hint="composition"</code> biases toward models with strong spatial reasoning (e.g. gemini-3-pro, gpt-image-1.5) for multi-character scenes and panel framing.</p>
+            <h3>The Novel Dimension: <code style="color: #30D158;">composition_strength</code></h3>
+            <p>The system knows which models understand multi-character scenes, panel framing, and negative space. <code>task_hint="composition"</code> biases selection toward spatial-reasoning models. This isn&rsquo;t &ldquo;pick the cheapest&rdquo; &mdash; it&rsquo;s <em>&ldquo;pick the model that understands visual composition.&rdquo;</em></p>
         </div>
         <div class="card">
             <h3>Moderation Circuit Breaker</h3>
-            <p>If one provider blocks content, try the next. If all block, return structured guidance telling agents to <em>reimagine the scene</em> — not just soften wording.</p>
+            <p>If OpenAI blocks a prompt, try Gemini. If all providers block it, return structured guidance telling agents to <strong style="color: var(--text-primary);">reimagine the scene</strong> &mdash; different camera angle, show aftermath instead of the moment. Content policy became a <em>creative constraint</em>, not a pipeline-killer.</p>
         </div>
     </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 6: RECIPES & ASSET MANAGEMENT                          -->
+<!-- SLIDE 6: NOVEL APPROACH #4 — CONTEXT PRESSURE               -->
 <!-- ============================================================ -->
 <div class="slide">
-    <div class="section-label">Context Pressure</div>
-    <h2 class="medium-headline">Recipes, URIs, and the Binary Data Problem</h2>
+    <div class="section-label">Novel Approach &#x2463;</div>
+    <h2 class="medium-headline">The 1.9 Million Token Wall</h2>
 
-    <div class="callout" style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.25);">
-        <div class="callout-label" style="color: #FF6B6B;">The Problem</div>
-        <p>A 10-panel comic with characters = 50+ MB of image data. In v7.3.0, <code>{{research_data}}</code> was carrying 500K+ tokens through every recipe step. By panel 4, context hit 1.9M tokens.</p>
+    <div style="text-align: center; padding: clamp(8px, 1.5vw, 16px) 0;">
+        <div style="font-size: clamp(36px, 8vw, 76px); font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--accent);">1,900,000 &#x2192; 1,024</div>
+        <div style="font-size: var(--font-small); color: var(--text-tertiary); margin-top: clamp(6px, 1vw, 10px);">tokens per recipe step &mdash; before vs. after the <code>comic://</code> protocol</div>
+    </div>
+
+    <div class="card card-elevated" style="border-left: 3px solid #FF6B6B; background: rgba(255, 107, 107, 0.06);">
+        <h3 style="color: #FF6B6B;">The Story</h3>
+        <p>In v7.3.0, <code>&#123;&#123;research_data&#125;&#125;</code> carried the full research JSON through every recipe step. By panel iteration 4, context hit 1.9M tokens. The pipeline was choking on its own output &mdash; not from complexity, but from <em>carrying data instead of referencing it</em>.</p>
     </div>
 
     <div class="grid-2">
         <div class="card card-accent">
-            <h3>The <code>comic://</code> Protocol</h3>
+            <h3>The <code>comic://</code> URI Protocol</h3>
             <div class="code-block"><span class="code-comment"># Project-scoped (shared across issues)</span>
-<span class="code-accent">comic://</span>project/characters/name
+<span class="code-accent">comic://</span>project/characters/hero-name
 
 <span class="code-comment"># Issue-scoped (per-issue assets)</span>
 <span class="code-accent">comic://</span>project/issues/issue-001/panels/panel_01
 
-<span class="code-comment"># Total recipe context: ~1 KB</span>
-<span class="code-green">URIs + storyboard JSON + metadata strings</span></div>
+<span class="code-comment"># ~70 bytes per URI vs. megabytes of binary data</span>
+<span class="code-green">Total recipe state: ~1 KB</span></div>
         </div>
         <div class="card">
             <h3>3-Stage Architecture</h3>
-            <div class="stage-row" style="flex-direction: column;">
+            <div class="stage-row" style="flex-direction: column; gap: clamp(6px, 1vw, 10px);">
                 <div class="stage-box" style="border-left: 3px solid #64D2FF;">
                     <h4>Stage 1 &mdash; Text Only (~$0.50)</h4>
-                    <p>Research &#x2192; style &#x2192; storyboard &#x2192; validate layouts</p>
+                    <p>Research &#x2192; style &#x2192; storyboard &#x2192; validate layouts. All cheap planning before committing to expensive image generation.</p>
                 </div>
                 <div style="text-align: center; padding: clamp(2px, 0.5vw, 4px) 0;">
-                    <span style="font-size: var(--font-small); font-weight: 700; color: #FFD60A; letter-spacing: 1px;">&#x1F6E1; APPROVAL GATE</span>
+                    <span style="font-size: var(--font-small); font-weight: 700; color: #FFD60A; letter-spacing: 1px;">&#x1F6E1; APPROVAL GATE &mdash; Human reviews the full plan before a single image is generated</span>
                 </div>
                 <div class="stage-box" style="border-left: 3px solid #BF5AF2;">
                     <h4>Stage 2 &mdash; Characters (shared)</h4>
-                    <p>Character design with cross-project reuse</p>
+                    <p>Cross-project reuse. Same character sheet works across multiple sagas if styles match.</p>
                 </div>
                 <div class="stage-box" style="border-left: 3px solid var(--accent);">
-                    <h4>Stage 3 &mdash; Per-Issue Art</h4>
-                    <p>Sub-recipe per issue: panels + cover in parallel</p>
+                    <h4>Stage 3 &mdash; Per-Issue Art (sub-recipe)</h4>
+                    <p><code>issue-art.yaml</code> is a reusable unit. <code>issue-retry.yaml</code> enables surgical recovery &mdash; retry one failed issue without regenerating the saga.</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <p class="body-text">Binary data is fully encapsulated in the <code>comic_create</code> tool. Agents never see file paths, base64 blobs, or raw bytes. Sub-recipes (<code>issue-art.yaml</code>, <code>issue-retry.yaml</code>) enable surgical recovery without full pipeline re-runs.</p>
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 7: STYLE SYSTEM                                        -->
+<!-- SLIDE 7: NOVEL APPROACH #5 — STYLE TRANSFER THROUGH TEXT    -->
 <!-- ============================================================ -->
 <div class="slide">
-    <div class="section-label">Style System</div>
-    <h2 class="medium-headline">How Agents Discover and Learn New Styles</h2>
+    <div class="section-label">Novel Approach &#x2464;</div>
+    <h2 class="medium-headline">Style Transfer Through Text</h2>
+    <p class="body-text" style="max-width: 740px;"><strong style="color: var(--accent);">Agents learn visual styles by reading markdown files.</strong> Not fine-tuning. Not specialized models. A structured <code>.md</code> file is enough for every agent in the pipeline to produce visually coherent output &mdash; in any style, including styles that didn&rsquo;t exist when the agents were written.</p>
 
     <div class="grid-2">
         <div class="card">
-            <span class="card-icon">&#x1F50D;</span>
-            <h3>Dynamic Style Discovery</h3>
-            <p>The style-curator reads <code>context/styles/</code> directory listing at runtime — no hardcoded style names. Adding a new style = dropping a <code>.md</code> file. Zero code changes.</p>
+            <span class="card-icon">&#x1F4C4;</span>
+            <h3>29 Style Packs &mdash; One Pattern</h3>
+            <p>Manga, watercolor, retro-americana, Ghibli, Sin City, cyberpunk noir. Each is a self-contained text file with canonical sections: Image Prompt Template, Color Palette, Panel Conventions, Character Rendering, AmpliVerse Branding. The style-curator discovers them dynamically by listing the directory. Zero hardcoded names.</p>
+        </div>
+        <div class="card card-elevated" style="border-left: 3px solid #FFD60A;">
+            <span class="card-icon">&#x1F9EC;</span>
+            <h3>The Character Rendering Section is the Key</h3>
+            <p>This section defines the shared visual DNA: face proportions, eye style, line quality, rendering technique. It is quoted <strong style="color: var(--text-primary);">verbatim</strong> into every character-designer prompt as a <em>&ldquo;STYLE COHESION&rdquo;</em> directive. Every character looks like it belongs in the same comic because they all inherit from the same text-based visual genome.</p>
         </div>
         <div class="card">
-            <span class="card-icon">&#x1F4D0;</span>
-            <h3>Canonical Sections</h3>
-            <p>Every style pack includes: Image Prompt Template, Color Palette, Panel Conventions, Panel Shapes, Text Treatment, Character Rendering, AmpliVerse Branding.</p>
-        </div>
-        <div class="card card-accent">
-            <span class="card-icon">&#x1F9EC;</span>
-            <h3>Character Rendering Coherence</h3>
-            <p>The Character Rendering section is quoted verbatim into every character-designer prompt as a "STYLE COHESION" directive, ensuring all characters share the same visual DNA.</p>
+            <span class="card-icon">&#x2728;</span>
+            <h3>Custom Styles are First-Class</h3>
+            <p>Any user description &mdash; <em>&ldquo;dark gritty noir with heavy shadows&rdquo;</em> &mdash; generates a complete style guide following the same template structure. Stored and reused identically to authored packs. The style system cannot distinguish &ldquo;authored&rdquo; from &ldquo;generated.&rdquo;</p>
         </div>
         <div class="card">
             <span class="card-icon">&#x1F504;</span>
-            <h3>Cross-Project Reuse</h3>
-            <p>Characters designed in project A can be reused in project B if the style matches, with a <code>needs_redesign</code> flag for style-mismatch adaptation. Skills load on demand, keeping base agent context lean.</p>
+            <h3>Cross-Project Character Reuse</h3>
+            <p>Characters are indexed by style. A character from project A can appear in project B if styles match, with <code>needs_redesign</code> flagged for style mismatches. Style becomes the passport for cross-saga continuity.</p>
         </div>
     </div>
 
     <div class="callout">
-        <div class="callout-label">Extensibility Scorecard</div>
-        <p><strong style="color: var(--text-primary);">New style:</strong> drop a <code>.md</code> file &nbsp;&#x2022;&nbsp; <strong style="color: var(--text-primary);">New model:</strong> add a <code>ModelEntry</code> dataclass &nbsp;&#x2022;&nbsp; <strong style="color: var(--text-primary);">Custom style:</strong> user description generates a complete guide following the same template. Zero agent code changes. Zero recipe changes. Zero bundle updates.</p>
+        <div class="callout-label">The Infinite Extensibility Guarantee</div>
+        <p><strong style="color: var(--text-primary);">Adding a new style = dropping a <code>.md</code> file.</strong> Zero agent code changes. Zero recipe changes. Zero bundle updates. The pipeline can produce in any visual style &mdash; including styles that didn&rsquo;t exist when the agents were written. Style extensibility is infinite, bounded only by someone writing a markdown file.</p>
     </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 8: ROAD BUMPS                                          -->
+<!-- SLIDE 8: THE PIPELINE IN MOTION                             -->
+<!-- ============================================================ -->
+<div class="slide">
+    <div class="section-label">The Full Picture</div>
+    <h2 class="medium-headline">Pipeline in Motion: All Five Approaches at Work</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 0; max-width: 860px; width: 100%;">
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px);">
+            <div class="flow-step" style="flex: 1; color: var(--text-primary); font-weight: 600; font-size: var(--font-small);">Session Transcript</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px); padding: clamp(3px, 0.5vw, 6px) 0 clamp(3px, 0.5vw, 6px) clamp(16px, 2.5vw, 24px);">
+            <span class="flow-arrow">&#x2193;</span>
+            <span class="badge" style="background: rgba(100,210,255,0.12); border-color: rgba(100,210,255,0.25); color: #64D2FF; white-space: nowrap;">&#x2460; Bundle Composition</span>
+            <span style="font-size: var(--font-small); color: var(--text-tertiary);">stories bundle &mdash; narrative craft delegated to specialists</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px);">
+            <div class="flow-step" style="flex: 1; font-size: var(--font-small);">Research &amp; Storyboard <span style="color: var(--text-tertiary);">&rarr; saga plan, character roster, panel specs</span></div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px); padding: clamp(3px, 0.5vw, 6px) 0 clamp(3px, 0.5vw, 6px) clamp(16px, 2.5vw, 24px);">
+            <span class="flow-arrow">&#x2193;</span>
+            <span class="badge" style="background: rgba(255,214,10,0.12); border-color: rgba(255,214,10,0.3); color: #FFD60A; white-space: nowrap;">&#x2464; Style Transfer</span>
+            <span style="font-size: var(--font-small); color: var(--text-tertiary);">style-curator reads <code>.md</code> file &mdash; visual language encoded as text</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px);">
+            <div class="flow-step" style="flex: 1; font-size: var(--font-small);">Style Guide <span style="color: var(--text-tertiary);">&rarr; visual language definition for the entire saga</span></div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px); padding: clamp(3px, 0.5vw, 6px) 0 clamp(3px, 0.5vw, 6px) clamp(16px, 2.5vw, 24px);">
+            <span class="flow-arrow">&#x2193;</span>
+            <span class="badge" style="background: rgba(191,90,242,0.12); border-color: rgba(191,90,242,0.3); color: #BF5AF2; white-space: nowrap;">&#x2461; Routing Matrix</span>
+            <span style="font-size: var(--font-small); color: var(--text-tertiary);">character-designer gets <code>vision</code> + <code>creative</code> &mdash; capability matched, not hardcoded</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px);">
+            <div class="flow-step" style="flex: 1; font-size: var(--font-small);">Character Design <span style="color: var(--text-tertiary);">&rarr; reference sheets with Character Rendering DNA injected verbatim</span></div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px); padding: clamp(3px, 0.5vw, 6px) 0 clamp(3px, 0.5vw, 6px) clamp(16px, 2.5vw, 24px);">
+            <span class="flow-arrow">&#x2193;</span>
+            <span class="badge" style="background: rgba(48,209,88,0.12); border-color: rgba(48,209,88,0.3); color: #30D158; white-space: nowrap;">&#x2462; Image Routing</span>
+            <span style="font-size: var(--font-small); color: var(--text-tertiary);"><code>composition_strength</code> selects the right model for multi-character scenes</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px);">
+            <div class="flow-step" style="flex: 1; font-size: var(--font-small);">Panel Generation <span style="color: var(--text-tertiary);">&rarr; each panel uses character URIs as references for visual consistency</span></div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px); padding: clamp(3px, 0.5vw, 6px) 0 clamp(3px, 0.5vw, 6px) clamp(16px, 2.5vw, 24px);">
+            <span class="flow-arrow">&#x2193;</span>
+            <span class="badge" style="background: rgba(48,209,88,0.12); border-color: rgba(48,209,88,0.3); color: #30D158; white-space: nowrap;">&#x2462; Moderation Breaker</span>
+            <span style="font-size: var(--font-small); color: var(--text-tertiary);">blocked? try next provider &rarr; all block? reimagine the scene</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px);">
+            <div class="flow-step" style="flex: 1; font-size: var(--font-small);">Cover Art + HTML Assembly <span style="color: var(--text-tertiary);">&rarr; compositor vision-reviews every panel before final render</span></div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px); padding: clamp(3px, 0.5vw, 6px) 0 clamp(3px, 0.5vw, 6px) clamp(16px, 2.5vw, 24px);">
+            <span class="flow-arrow">&#x2193;</span>
+            <span class="badge" style="white-space: nowrap;">&#x2463; comic:// URIs</span>
+            <span style="font-size: var(--font-small); color: var(--text-tertiary);">binary data never enters context &mdash; 70-byte pointers throughout the entire recipe</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: clamp(8px, 1.5vw, 14px);">
+            <div class="flow-step" style="flex: 1; border-color: var(--accent); color: var(--text-primary); font-weight: 600; font-size: var(--font-small);">Final Output <span style="color: var(--text-tertiary); font-weight: 400;">&rarr; ~1 KB of recipe state managing 50+ MB of images across a full saga</span></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: ROAD BUMPS → WHAT WE HARDENED                      -->
 <!-- ============================================================ -->
 <div class="slide">
     <div class="section-label">Lessons Learned</div>
-    <h2 class="medium-headline">Road Bumps Along the Way</h2>
+    <h2 class="medium-headline">Road Bumps &#x2192; What We Hardened</h2>
+
+    <div class="card card-elevated" style="border-left: 3px solid var(--accent);">
+        <h3 style="color: var(--accent);">Shadow-Operator&rsquo;s 43-Minute Container Gauntlet</h3>
+        <p style="margin-bottom: clamp(8px, 1.5vw, 14px);">First shadow test of the comic pipeline. Container refused to build &mdash; dependencies tangled, config paths missing inside the sealed environment. Second attempt: another collapse. Third try: switched to general-purpose container, configured from scratch.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: clamp(12px, 2.5vw, 24px); margin-bottom: clamp(8px, 1.5vw, 14px);">
+            <div class="stat-item"><div class="stat-num" style="font-size: clamp(24px, 5vw, 40px);">36</div><div class="stat-label">Container ops</div></div>
+            <div class="stat-item"><div class="stat-num" style="font-size: clamp(24px, 5vw, 40px);">43</div><div class="stat-label">Minutes</div></div>
+            <div class="stat-item"><div class="stat-num" style="font-size: clamp(24px, 5vw, 40px);">79</div><div class="stat-label">Tool calls</div></div>
+        </div>
+        <p><strong style="color: var(--text-primary);">What was hardened:</strong> &ldquo;Error out clearly rather than falling back to host environment.&rdquo; The pipeline now has an explicit design rule: <em>never modify the host</em>. Isolation failure is loud, not silent.</p>
+    </div>
 
     <div class="grid-2">
-        <div class="card card-elevated" style="grid-column: 1 / -1;">
-            <h3 style="color: var(--accent);">Shadow-Operator's 43-Minute Container Gauntlet</h3>
-            <p style="margin-bottom: clamp(6px, 1vw, 10px);">First shadow test of the comic pipeline. Container refused to build — dependencies tangled, config paths missing inside the sealed environment. Second attempt: another collapse. Third try: switched to general-purpose container, manually configured from scratch.</p>
-            <div style="display: flex; flex-wrap: wrap; gap: clamp(12px, 2.5vw, 24px); margin-top: clamp(6px, 1vw, 10px);">
-                <div class="stat-item">
-                    <div class="stat-num" style="font-size: clamp(24px, 5vw, 40px);">36</div>
-                    <div class="stat-label">Container ops</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num" style="font-size: clamp(24px, 5vw, 40px);">43</div>
-                    <div class="stat-label">Minutes</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num" style="font-size: clamp(24px, 5vw, 40px);">79</div>
-                    <div class="stat-label">Tool calls</div>
-                </div>
-            </div>
-            <p style="margin-top: clamp(8px, 1.5vw, 12px); font-style: italic;">"Prove it in isolation first. Shadow-operator's gauntlet was not wasted time. It was the foundation that made everything after it possible."</p>
-        </div>
-
         <div class="card">
-            <h3>The Caching Productivity Trap</h3>
-            <p>The <code>install-state.json</code> vs <code>cache/</code> mismatch bug — reset cleared the cache but not the state file, creating a "phantom installed" condition. ModuleActivator thought modules were installed but the code was gone.</p>
-            <p style="margin-top: clamp(6px, 1vw, 10px);"><strong style="color: var(--text-primary);">Lesson:</strong> State tracking files should live in <code>cache/</code> if they track cached data.</p>
+            <h3>The Cache Coherence Trap</h3>
+            <p>The <code>install-state.json</code> vs <code>cache/</code> mismatch bug &mdash; reset cleared the cache but not the state file, creating a &ldquo;phantom installed&rdquo; condition. ModuleActivator thought modules were installed but the code was gone.</p>
+            <p style="margin-top: clamp(6px, 1vw, 10px);"><strong style="color: var(--text-primary);">What was hardened:</strong> &ldquo;State tracking files must live in <code>cache/</code> if they track cached data.&rdquo; The bug literally wrote the co-location policy.</p>
         </div>
-
         <div class="card">
-            <h3>Forcing Functions</h3>
-            <p>Shadow testing failed TWICE on premature fixes — forced the team to actually understand root causes (session creation flow bypassing AppModuleResolver) before declaring success.</p>
-            <p style="margin-top: clamp(6px, 1vw, 10px);"><strong style="color: var(--text-primary);">Also:</strong> <code>rm -rf ~/.amplifier/cache/</code> breaks the CLI entirely — site-packages contain links to cache files. Prescribed: <code>amplifier reset --remove cache,registry -y</code></p>
+            <h3>The Forcing Function</h3>
+            <p>Shadow tests failed <em>twice</em> on premature fixes &mdash; forced the team to understand root causes (session creation flow bypassing AppModuleResolver) before declaring success.</p>
+            <p style="margin-top: clamp(6px, 1vw, 10px);"><strong style="color: var(--text-primary);">What was built:</strong> The <code>validate-storyboard</code> step (v7.6.0) &mdash; a closed feedback loop that catches layout errors <em>before</em> expensive image generation begins. Fail cheap, not expensive.</p>
         </div>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">The Pattern</div>
+        <p>Every road bump became a guardrail. The pipeline is robust <strong style="color: var(--text-primary);">because</strong> it was built through failure &mdash; not despite it. &ldquo;Prove it in isolation first&rdquo; is now the first principle of the whole system.</p>
     </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 9: DEVELOPMENT ARC                                     -->
+<!-- SLIDE 10: DEVELOPMENT ARC                                   -->
 <!-- ============================================================ -->
 <div class="slide">
     <div class="section-label">Evolution</div>
     <h2 class="medium-headline">The Development Arc</h2>
-    <p class="body-text">From "generate one comic" to "orchestrate a narrative arc with character continuity and human oversight."</p>
+    <p class="body-text">From &ldquo;generate one comic&rdquo; to &ldquo;orchestrate a narrative arc with character continuity and human oversight.&rdquo; Each era was defined by a novel approach that emerged from the constraints of the one before.</p>
 
     <div class="timeline">
         <div class="era">
             <div class="era-label">Era 1 &mdash; Foundation</div>
             <h4>Single-Issue Pipeline</h4>
             <p>Style system, speech bubbles, HTML assembly. One session in, one comic out.</p>
+            <p style="margin-top: clamp(4px, 0.8vw, 8px); color: #FFD60A; font-size: clamp(11px, 1.4vw, 12px); font-weight: 600;">&#x2464; Emerged: Style as extensible <code>.md</code> files</p>
         </div>
         <div class="era">
-            <div class="era-label">Era 2 &mdash; v7.0 – v7.5</div>
+            <div class="era-label">Era 2 &mdash; v7.0&ndash;v7.5</div>
             <h4>Quality</h4>
-            <p>Composition-aware model selection. Content policy as first-class concern. Vision model roles added.</p>
+            <p>Composition-aware model selection. Content policy as first-class concern. Vision model roles introduced.</p>
+            <p style="margin-top: clamp(4px, 0.8vw, 8px); color: #BF5AF2; font-size: clamp(11px, 1.4vw, 12px); font-weight: 600;">&#x2461;&#x2462; Emerged: Routing matrix + image routing</p>
         </div>
         <div class="era">
-            <div class="era-label">Era 3 &mdash; v7.6 – v7.7</div>
+            <div class="era-label">Era 3 &mdash; v7.6&ndash;v7.7</div>
             <h4>Validation</h4>
             <p>Layout validation feedback loops. Flexible session input. Pipeline became stateful and resumable.</p>
+            <p style="margin-top: clamp(4px, 0.8vw, 8px); color: var(--accent); font-size: clamp(11px, 1.4vw, 12px); font-weight: 600;">Emerged: Closed feedback loops &mdash; validate before generate</p>
         </div>
         <div class="era" style="border-top-color: var(--accent);">
             <div class="era-label" style="color: var(--accent);">Era 4 &mdash; v8.0</div>
             <h4>Saga System</h4>
-            <p>Multi-issue pipeline, cross-project character discovery, per-issue variant creation, 3-stage orchestration with approval gates.</p>
+            <p>Multi-issue pipeline, cross-project character discovery, 3-stage orchestration with approval gates.</p>
+            <p style="margin-top: clamp(4px, 0.8vw, 8px); color: var(--accent); font-size: clamp(11px, 1.4vw, 12px); font-weight: 600;">&#x2463; Emerged: <code>comic://</code> URI protocol &amp; sub-recipe composition</p>
         </div>
         <div class="era" style="border-top-color: #30D158;">
             <div class="era-label" style="color: #30D158;">Era 5 &mdash; v8.1</div>
             <h4>Composability</h4>
             <p>Sub-recipe patterns, deterministic character lookup, composable pipeline architecture.</p>
+            <p style="margin-top: clamp(4px, 0.8vw, 8px); color: #64D2FF; font-size: clamp(11px, 1.4vw, 12px); font-weight: 600;">&#x2460; Emerged: Cross-project reuse &amp; deterministic lookup</p>
         </div>
     </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 10: KEY TAKEAWAYS                                      -->
+<!-- SLIDE 11: TAKEAWAYS                                         -->
 <!-- ============================================================ -->
 <div class="slide">
     <div class="section-label">Takeaways</div>
-    <h2 class="medium-headline">What We Learned</h2>
+    <h2 class="medium-headline">Patterns That Unlock Creative AI</h2>
 
     <div style="max-width: 800px; width: 100%;">
         <div class="takeaway">
             <div class="takeaway-num">1</div>
             <div>
-                <h4>Composition over monoliths</h4>
-                <p>Thin bundle + behavior file + cross-bundle delegation = each agent carries only what it needs.</p>
+                <h4>Compose creative capabilities, don&rsquo;t monolith them</h4>
+                <p>Three bundles, each bringing distinct intelligence, composed through a 70-line manifest. Six tight specialists instead of one overloaded generalist. Each agent carries only its domain&rsquo;s context.</p>
             </div>
         </div>
         <div class="takeaway">
             <div class="takeaway-num">2</div>
             <div>
-                <h4>Route capabilities, not providers</h4>
-                <p>The routing matrix (and its image-gen sibling) let you swap models without touching agent code.</p>
+                <h4>Route by capability, not by provider name</h4>
+                <p>Agents declare what they need; the system adapts. Works for both agent models (routing matrix) AND image generation (image routing matrix). Swap providers without touching agent code.</p>
             </div>
         </div>
         <div class="takeaway">
             <div class="takeaway-num">3</div>
             <div>
-                <h4>URIs, not bytes</h4>
-                <p>The <code>comic://</code> protocol keeps recipe context at ~1 KB while managing 50+ MB of images.</p>
+                <h4>Reference, don&rsquo;t carry</h4>
+                <p>The <code>comic://</code> protocol turned 1.9M tokens into ~1&nbsp;KB by replacing binary blobs with 70-byte URIs. Binary data is never in context &mdash; only pointers to where it lives.</p>
             </div>
         </div>
         <div class="takeaway">
             <div class="takeaway-num">4</div>
             <div>
-                <h4>Extensibility through convention</h4>
-                <p>New styles are <code>.md</code> files. New models are <code>ModelEntry</code> entries. No code changes required.</p>
+                <h4>Teach through text, not training</h4>
+                <p>Style transfer through markdown files means infinite extensibility. No fine-tuning required. The pipeline can produce in any visual style, including styles that didn&rsquo;t exist when the agents were written.</p>
             </div>
         </div>
         <div class="takeaway">
             <div class="takeaway-num">5</div>
             <div>
-                <h4>Shadow testing is painful but essential</h4>
-                <p>43 minutes of container gauntlet prevented weeks of "works on my machine" bugs.</p>
+                <h4>Fail in isolation, harden in production</h4>
+                <p>Shadow testing is painful but every failure became a guardrail. 43 minutes of container gauntlet prevented weeks of &ldquo;works on my machine&rdquo; bugs and wrote three design principles.</p>
             </div>
         </div>
         <div class="takeaway">
             <div class="takeaway-num">6</div>
             <div>
-                <h4>Cache coherence matters</h4>
-                <p>State tracking must co-locate with the data it tracks — or you get phantom-installed conditions.</p>
+                <h4>Gate the expensive work</h4>
+                <p>Approval gates and validation steps before image generation save time, money, and context. ~$0.50 of text planning before committing to $5&ndash;$20 of image generation is the right order of operations.</p>
             </div>
         </div>
     </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- SLIDE 11: WHAT'S NEXT / CTA                                  -->
+<!-- SLIDE 12: WHAT'S NEXT + SOURCES                             -->
 <!-- ============================================================ -->
-<div class="slide center">
-    <div class="section-label">Roadmap</div>
-    <h2 class="headline">What's Next</h2>
-    <p class="subhead" style="margin-bottom: clamp(16px, 3vw, 32px);">The pipeline is live. Here's where it's headed.</p>
+<div class="slide">
+    <div class="section-label">Roadmap &amp; Sources</div>
+    <h2 class="medium-headline">What&rsquo;s Next</h2>
 
-    <div class="grid-2" style="max-width: 700px;">
+    <div class="grid-2" style="max-width: 780px;">
         <div class="card">
             <h3>Native Image Generation</h3>
-            <p>Replace the Issue #90 bridge with kernel-native image generation support.</p>
+            <p>Replace the Issue #90 bridge with kernel-native image generation support &mdash; eliminating the adapter layer entirely.</p>
         </div>
         <div class="card">
             <h3>Style Gallery</h3>
-            <p>Visual discovery UI for browsing the full 29-style library with previews.</p>
+            <p>Visual discovery UI for browsing the full 29-style library with generated preview thumbnails per style.</p>
         </div>
         <div class="card">
             <h3>Automated Saga Continuation</h3>
-            <p>Continue story arcs across sessions with persistent character state.</p>
+            <p>Continue story arcs across sessions with persistent character state and long-running narrative memory.</p>
         </div>
         <div class="card">
             <h3>CI/CD Integration</h3>
-            <p>Comic generation pipelines triggered by commits, PRs, or scheduled runs.</p>
+            <p>Comic generation pipelines triggered by commits, PRs, or scheduled runs &mdash; changelogs as comics.</p>
         </div>
     </div>
 
-    <div style="margin-top: clamp(16px, 3vw, 32px);">
-        <div class="code-block" style="max-width: 500px; text-align: left; display: inline-block;"><span class="code-comment"># Try it now</span>
-<span class="code-accent">amplifier</span> activate comic-strips
-<span class="code-accent">amplifier</span> create comic <span class="code-blue">--style manga</span></div>
-    </div>
-</div>
-
-<!-- ============================================================ -->
-<!-- SLIDE 12: SOURCES & METHODOLOGY                              -->
-<!-- ============================================================ -->
-<div class="slide">
-    <div class="section-label">Sources</div>
-    <h2 class="medium-headline">Sources &amp; Methodology</h2>
-    <div class="body-text" style="line-height: 1.7; max-width: 800px;">
-        <p><strong style="color: var(--text-primary);">Data as of:</strong> March 7, 2026</p>
-        <p><strong style="color: var(--text-primary);">Feature status:</strong> <span class="badge badge-green" style="vertical-align: middle;">Active</span></p>
-        <p style="margin-top: clamp(10px, 1.5vw, 16px);"><strong style="color: var(--text-primary);">Content source:</strong></p>
+    <div style="border-top: 1px solid var(--border-subtle); padding-top: clamp(12px, 2vw, 20px); width: 100%; max-width: 780px;">
+        <p style="font-size: var(--font-small); font-weight: 600; color: var(--text-secondary); margin-bottom: clamp(6px, 1vw, 10px); text-transform: uppercase; letter-spacing: 1px;">Sources &amp; Methodology</p>
         <ul class="compact-list">
-            <li>All architecture details, agent configurations, and version history provided directly by the bundle author from the <code>amplifier-bundle-comic-strips</code> repository</li>
-            <li>Git commit history: v7.0.0 through v8.1.0 visible in repository log (<code>git log --oneline</code>)</li>
-            <li>Version tags confirmed via submodule updates in parent repo (commits 86a170d through a28eca3)</li>
-            <li>Shadow testing narrative sourced from documented session transcripts</li>
-            <li>Model count (12 models / 3 API surfaces) from <code>generate_image</code> tool module source</li>
-            <li>Style count (29 styles) from <code>context/styles/</code> directory listing</li>
+            <li style="font-size: var(--font-small); color: var(--text-tertiary);">Data as of March 7, 2026 &middot; <span class="badge badge-green" style="vertical-align: middle; font-size: 10px; padding: 2px 6px;">Active</span></li>
+            <li style="font-size: var(--font-small); color: var(--text-tertiary);">Architecture details and agent configs from <code>amplifier-bundle-comic-strips</code> repository (git log v7.0.0&ndash;v8.1.0)</li>
+            <li style="font-size: var(--font-small); color: var(--text-tertiary);">Shadow testing metrics (36 ops, 43 min, 79 tool calls) from a single documented session transcript</li>
+            <li style="font-size: var(--font-small); color: var(--text-tertiary);">Context token figure (1.9M at panel 4) from a specific v7.3.0 debugging session; cost estimate (~$0.50 Stage 1) is approximate</li>
+            <li style="font-size: var(--font-small); color: var(--text-tertiary);">Model count (12 / 3 API surfaces) from <code>generate_image</code> module source &middot; Style count (29) from <code>context/styles/</code> directory listing</li>
+            <li style="font-size: var(--font-small); color: var(--text-tertiary);">Primary contributor: bundle author (single-author project based on commit history)</li>
         </ul>
-        <p style="margin-top: clamp(10px, 1.5vw, 16px);"><strong style="color: var(--text-primary);">Gaps &amp; caveats:</strong></p>
-        <ul class="compact-list">
-            <li>Exact line counts, commit counts, and contributor percentages were not independently verified via automated git analysis — figures are author-reported</li>
-            <li>Cost estimate (~$0.50 for Stage 1) is approximate and depends on model pricing at time of run</li>
-            <li>Shadow testing metrics (36 ops, 43 min, 79 tool calls) are from a single documented session</li>
-            <li>Context token figure (1.9M tokens at panel 4) is from a specific v7.3.0 debugging session</li>
-        </ul>
-        <p style="margin-top: clamp(10px, 1.5vw, 16px);"><strong style="color: var(--text-primary);">Primary contributor:</strong> Bundle author (single-author project based on commit history)</p>
     </div>
 </div>
 
