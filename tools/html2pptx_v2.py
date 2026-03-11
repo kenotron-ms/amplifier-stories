@@ -1971,6 +1971,95 @@ class HTMLToPPTXConverterV2:
 
         return current_top + 1.4 + GAP_NORMAL
 
+    def _handle_big_number(self, slide, elements, current_top, handled, centered):
+        """Render big-number / giant-word elements as dominant slide text.
+
+        Produces a large centred word (96pt) occupying most of the slide,
+        with an optional small label underneath.  Handles both ``big-number``
+        (template vocabulary) and ``giant-word`` (presentation vocabulary).
+
+        Sub-elements recognised inside each element:
+          .label | .big-number-label | .small-text  ->  14pt gray note below
+        """
+        if not elements:
+            return current_top
+
+        for el in elements:
+            handled.add(id(el))
+
+            # --- colour from CSS class ---
+            classes = el.get("class", [])
+            color = parse_color_from_class(classes)
+            if color is None:
+                # Default: cyan for big-number, white for giant-word
+                color = WHITE if "giant-word" in classes else MS_CYAN
+
+            # --- main text (exclude sub-label children) ---
+            label_el = (
+                el.find(class_="label")
+                or el.find(class_="big-number-label")
+                or el.find(class_="small-text")
+            )
+            if label_el:
+                label_text = get_text(label_el)
+                handled.add(id(label_el))
+            else:
+                label_text = ""
+
+            main_text = get_text(el)
+            if label_text and main_text.endswith(label_text):
+                main_text = main_text[: -len(label_text)].strip()
+
+            if not main_text:
+                continue
+
+            # --- main shape: large, centred, NO auto-shrink ---
+            shape_height = 3.0
+            shape, tf = _make_text_shape(
+                slide,
+                CONTENT_LEFT,
+                current_top,
+                CONTENT_WIDTH,
+                shape_height,
+                auto_size="none",
+            )
+            tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+            tf.word_wrap = True
+
+            _add_paragraph(
+                tf,
+                main_text,
+                96,
+                bold=True,
+                color=color,
+                alignment=PP_ALIGN.CENTER,
+            )
+
+            current_top += shape_height + GAP_TIGHT
+
+            # --- optional label below ---
+            if label_text:
+                lbl_shape, lbl_tf = _make_text_shape(
+                    slide,
+                    CONTENT_LEFT,
+                    current_top,
+                    CONTENT_WIDTH,
+                    0.5,
+                    auto_size="fit_shape",
+                )
+                _add_paragraph(
+                    lbl_tf,
+                    label_text,
+                    14,
+                    color=GRAY_70,
+                    alignment=PP_ALIGN.CENTER,
+                )
+                current_top += 0.5 + GAP_NORMAL
+            else:
+                current_top += GAP_NORMAL
+
+        return current_top
+
     def _handle_tier_stack(self, slide, el, current_top):
         """Render tier-stack as sequential tier cards."""
         tiers = el.find_all(class_="tier")
@@ -3010,6 +3099,20 @@ class HTMLToPPTXConverterV2:
                 continue
             handled.add(id(el))
             current_top = self._handle_stats(slide, el, current_top)
+
+        # ---- 19b. Big numbers / giant words ----
+        big_numbers = [
+            el
+            for el in slide_div.find_all(
+                class_=lambda c: c
+                and any(x in c for x in ["big-number", "giant-word"])
+            )
+            if id(el) not in handled
+        ]
+        if big_numbers:
+            current_top = self._handle_big_number(
+                slide, big_numbers, current_top, handled, centered
+            )
 
         # ---- 20. Big stats ----
         big_stats = [
