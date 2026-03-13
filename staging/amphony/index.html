@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Amphony — The Software Factory That Never Sleeps</title>
+    <style>
+        /* ─── Design Tokens ─────────────────────────────────────────────────── */
+        :root {
+            --accent:        #8b5cf6;
+            --accent-dim:    rgba(139, 92, 246, 0.18);
+            --accent-border: rgba(139, 92, 246, 0.40);
+            --green:         #34d399;
+            --green-dim:     rgba(52, 211, 153, 0.12);
+            --surface-1: rgba(255,255,255,0.06);
+            --surface-2: rgba(255,255,255,0.10);
+            --surface-3: rgba(255,255,255,0.15);
+            --surface-accent: rgba(139, 92, 246, 0.10);
+            --border-subtle:  rgba(255,255,255,0.10);
+            --border-visible: rgba(255,255,255,0.18);
+            --text-primary:   #ffffff;
+            --text-secondary: rgba(255,255,255,0.72);
+            --text-tertiary:  rgba(255,255,255,0.52);
+            --fs-hero:   clamp(40px, 10vw, 80px);
+            --fs-h1:     clamp(30px, 6vw, 56px);
+            --fs-h2:     clamp(22px, 4vw, 38px);
+            --fs-h3:     clamp(16px, 2.5vw, 22px);
+            --fs-body:   clamp(14px, 2vw, 17px);
+            --fs-small:  clamp(12px, 1.8vw, 14px);
+            --fs-label:  clamp(12px, 1.5vw, 14px);
+            --fs-code:   clamp(12px, 1.9vw, 14px);
+            --fs-big:    clamp(36px, 8vw, 72px);
+            --space-xs: clamp(6px, 1vw, 10px);
+            --space-sm: clamp(10px, 1.8vw, 16px);
+            --space-md: clamp(16px, 2.5vw, 24px);
+            --space-lg: clamp(22px, 4vw, 40px);
+            --space-xl: clamp(32px, 6vw, 60px);
+            --radius-sm: clamp(8px, 1vw, 12px);
+            --radius-md: clamp(12px, 1.5vw, 16px);
+            --radius-lg: clamp(16px, 2vw, 24px);
+            --gap-grid: clamp(14px, 2.5vw, 28px);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: var(--text-primary);
+            overflow: hidden;
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── Slide Shell ────────────────────────────────────────────────────── */
+        .slide {
+            display: none;
+            width: 100vw;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: clamp(56px, 9vw, 110px) clamp(24px, 6vw, 90px) clamp(80px, 11vw, 100px);
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .slide.active { display: flex; }
+        .slide.center {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        @media (max-height: 500px) and (orientation: landscape) {
+            .slide { padding: 14px clamp(20px, 5vw, 80px) 60px; }
+            .slide.center { justify-content: flex-start; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .slide, .slide * { animation: none !important; transition: none !important; }
+        }
+
+        /* ─── Typography ─────────────────────────────────────────────────────── */
+        .section-label {
+            font-size: var(--fs-label);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--accent);
+            margin-bottom: var(--space-sm);
+        }
+        .headline {
+            font-size: var(--fs-hero);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+        }
+        .medium-headline {
+            font-size: var(--fs-h1);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+        }
+        .subhead {
+            font-size: clamp(18px, 3.5vw, 30px);
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-bottom: var(--space-sm);
+        }
+        .body-text {
+            font-size: var(--fs-body);
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .small-text {
+            font-size: var(--fs-small);
+            color: var(--text-tertiary);
+            line-height: 1.6;
+        }
+        .accent-word { color: var(--accent); }
+        .green-word  { color: var(--green); }
+
+        /* ─── Cards ──────────────────────────────────────────────────────────── */
+        .card {
+            background: var(--surface-1);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+        }
+        .card h3, .card h4 { color: var(--text-primary); font-size: var(--fs-h3); margin-bottom: var(--space-xs); }
+        .card p, .card li  { color: var(--text-secondary); font-size: var(--fs-body); line-height: 1.6; }
+        .card-accent {
+            background: var(--surface-accent);
+            border: 1px solid var(--accent-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+        }
+        .card-accent h3, .card-accent h4 { color: var(--text-primary); font-size: var(--fs-h3); margin-bottom: var(--space-xs); }
+        .card-accent p { color: var(--text-secondary); font-size: var(--fs-body); line-height: 1.6; }
+        .card-green {
+            background: var(--green-dim);
+            border: 1px solid rgba(52, 211, 153, 0.28);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+        }
+        .card-green h3 { color: var(--green); font-size: var(--fs-h3); margin-bottom: var(--space-xs); }
+        .card-green p, .card-green li { color: var(--text-secondary); font-size: var(--fs-body); line-height: 1.6; }
+
+        /* ─── Grids ──────────────────────────────────────────────────────────── */
+        .thirds  { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: var(--gap-grid); }
+        .halves  { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: var(--gap-grid); }
+        .fourths { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: var(--gap-grid); }
+
+        /* ─── Code Blocks ────────────────────────────────────────────────────── */
+        .code-block {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--green);
+            border-radius: var(--radius-sm);
+            padding: var(--space-md) var(--space-lg);
+            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            font-size: var(--fs-code);
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            color: var(--green);
+        }
+        .code-comment { color: rgba(100, 200, 130, 0.55); }
+        .code-key     { color: #f9a8d4; }
+        .code-val     { color: #fbbf24; }
+
+        /* ─── Data Tables ────────────────────────────────────────────────────── */
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--fs-body); }
+        .data-table th {
+            color: var(--accent);
+            font-size: var(--fs-small);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-align: left;
+            padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 16px);
+            border-bottom: 1px solid var(--border-visible);
+        }
+        .data-table td {
+            color: var(--text-secondary);
+            padding: clamp(10px, 1.8vw, 14px) clamp(10px, 2vw, 16px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.5;
+        }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table td:first-child { color: var(--text-primary); font-weight: 500; }
+        .data-table tr:hover td { background: var(--surface-1); }
+        .table-wrap {
+            background: var(--surface-1);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ─── Velocity / Stat Grids ──────────────────────────────────────────── */
+        .velocity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+            gap: var(--gap-grid);
+        }
+        .velocity-stat {
+            background: var(--surface-accent);
+            border: 1px solid var(--accent-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-xs);
+            text-align: center;
+        }
+        .velocity-number {
+            font-size: var(--fs-big);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            color: var(--accent);
+            margin-bottom: var(--space-xs);
+        }
+        .velocity-number-sm {
+            font-size: clamp(30px, 7vw, 64px);
+        }
+        .velocity-label {
+            font-size: var(--fs-small);
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.3;
+        }
+
+        /* ─── Pipeline / Flow ────────────────────────────────────────────────── */
+        .pipeline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(6px, 1.5vw, 12px);
+            align-items: center;
+        }
+        .pipe-step {
+            background: var(--surface-accent);
+            border: 1px solid var(--accent-border);
+            border-radius: var(--radius-sm);
+            padding: clamp(10px, 2vw, 16px) clamp(14px, 3vw, 24px);
+            font-size: var(--fs-h3);
+            font-weight: 700;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+        .pipe-arrow { color: var(--text-tertiary); font-size: clamp(16px, 3vw, 22px); flex-shrink: 0; }
+
+        /* ─── Gate Items ─────────────────────────────────────────────────────── */
+        .gate-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+        .gate-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            background: var(--surface-1);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: clamp(10px, 2vw, 16px) var(--space-md);
+        }
+        .gate-number {
+            flex-shrink: 0;
+            width: clamp(26px, 4vw, 34px);
+            height: clamp(26px, 4vw, 34px);
+            background: var(--accent-dim);
+            border: 1px solid var(--accent-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--fs-small);
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .gate-text { font-size: var(--fs-body); color: var(--text-secondary); line-height: 1.5; padding-top: 2px; }
+
+        /* ─── Heal Cards ─────────────────────────────────────────────────────── */
+        .heal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: var(--gap-grid); }
+        .heal-card {
+            background: var(--surface-1);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            border-left: 3px solid var(--green);
+        }
+        .heal-icon   { font-size: clamp(22px, 4vw, 32px); margin-bottom: var(--space-xs); }
+        .heal-cause  { font-size: var(--fs-body); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-xs); }
+        .heal-effect { font-size: var(--fs-small); color: var(--text-secondary); line-height: 1.5; }
+
+        /* ─── Screenshot ─────────────────────────────────────────────────────── */
+        .screenshot-wrap {
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 8px 48px rgba(0,0,0,0.7);
+        }
+        .screenshot-wrap img { width: 100%; height: auto; display: block; }
+
+        /* ─── Step Cards ─────────────────────────────────────────────────────── */
+        .steps-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(5px, 1.2vw, 9px);
+            align-items: stretch;
+        }
+        .step-card {
+            flex: 1 1 min(110px, 100%);
+            background: var(--surface-accent);
+            border: 1px solid var(--accent-border);
+            border-radius: var(--radius-sm);
+            padding: var(--space-sm);
+            text-align: center;
+        }
+        .step-icon  { font-size: clamp(20px, 3.5vw, 30px); display: block; margin-bottom: 6px; }
+        .step-label { font-size: var(--fs-small); color: var(--text-secondary); line-height: 1.4; font-weight: 500; }
+        .step-arrow { display: flex; align-items: center; color: var(--text-tertiary); font-size: clamp(13px, 2.5vw, 18px); flex-shrink: 0; align-self: center; }
+
+        /* ─── Commit Log ─────────────────────────────────────────────────────── */
+        .commit-log {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: var(--space-md);
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: var(--fs-code);
+        }
+        .commit-row {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: baseline;
+            padding: clamp(5px, 1vw, 8px) 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .commit-row:last-child { border-bottom: none; }
+        .commit-hash { color: var(--accent); flex-shrink: 0; font-size: var(--fs-small); }
+        .commit-msg  { color: var(--green); }
+
+        /* ─── Nav Dots ───────────────────────────────────────────────────────── */
+        .nav {
+            position: fixed;
+            bottom: clamp(18px, 3vw, 26px);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: clamp(6px, 1vw, 10px);
+            z-index: 200;
+        }
+        .nav-dot {
+            width: clamp(6px, 1.2vw, 9px);
+            height: clamp(6px, 1.2vw, 9px);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.22);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            flex-shrink: 0;
+        }
+        .nav-dot.active { background: var(--accent); transform: scale(1.35); }
+        .nav-dot:hover  { background: rgba(255,255,255,0.5); }
+        @media (hover: none) { .nav-dot { min-width: 16px; min-height: 16px; } }
+
+        /* ─── Slide Counter ──────────────────────────────────────────────────── */
+        .slide-counter {
+            position: fixed;
+            bottom: clamp(18px, 3vw, 26px);
+            right: clamp(16px, 3vw, 28px);
+            font-size: var(--fs-label);
+            color: var(--text-tertiary);
+            z-index: 200;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.5px;
+        }
+
+        /* ─── More Stories ───────────────────────────────────────────────────── */
+        .more-stories {
+            position: fixed;
+            bottom: clamp(6px, 1.2vw, 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(10px, 1.4vw, 11px);
+            color: rgba(255,255,255,0.40);
+            text-decoration: none;
+            z-index: 100;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+        .more-stories:hover { color: rgba(255,255,255,0.5); }
+
+        /* ─── Utility ────────────────────────────────────────────────────────── */
+        .mt-sm  { margin-top: var(--space-sm); }
+        .mt-md  { margin-top: var(--space-md); }
+        .mt-lg  { margin-top: var(--space-lg); }
+        .mt-xl  { margin-top: var(--space-xl); }
+        .mb-sm  { margin-bottom: var(--space-sm); }
+        .mb-md  { margin-bottom: var(--space-md); }
+        .mb-lg  { margin-bottom: var(--space-lg); }
+
+        ul.body-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
+        ul.body-list li { font-size: var(--fs-body); color: var(--text-secondary); line-height: 1.6; display: flex; gap: var(--space-sm); }
+        ul.body-list li::before { content: '\2192'; color: var(--accent); flex-shrink: 0; font-weight: 700; }
+
+        .title-glow {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(700px, 90vw);
+            height: min(500px, 55vh);
+            background: radial-gradient(ellipse at center, rgba(139,92,246,0.16) 0%, transparent 68%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* title-glow must stay position:absolute — exclude it so it renders as a backdrop, not a flex item */
+        .slide.center > *:not(.title-glow) { position: relative; z-index: 1; }
+
+        .big-quote {
+            font-size: clamp(28px, 6vw, 52px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+        }
+        .big-quote em { color: var(--accent); font-style: normal; }
+
+        ul.sources-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: clamp(5px, 1vw, 9px); }
+        ul.sources-list li { font-size: var(--fs-body); color: var(--text-secondary); line-height: 1.5; padding-left: var(--space-md); position: relative; }
+        ul.sources-list li::before { content: '\2022'; position: absolute; left: 0; color: var(--accent); }
+        ul.sources-list code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: var(--fs-small);
+            color: var(--green);
+            background: rgba(0,0,0,0.3);
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .mono {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: var(--fs-small);
+            color: var(--green);
+            background: rgba(0,0,0,0.3);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 1 — Title
+═══════════════════════════════════════════════════════════ -->
+<div class="slide active center" id="slide-1">
+    <div class="title-glow"></div>
+    <div class="section-label">Amplifier Stories</div>
+    <h1 class="headline">Amphony</h1>
+    <p class="subhead">The Software Factory That Never Sleeps</p>
+    <p class="small-text mt-md">Inspired by OpenAI's Symphony &nbsp;·&nbsp; Powered by Amplifier &nbsp;·&nbsp; March 2026</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 2 — The Origin
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-2">
+    <div class="section-label">The Origin</div>
+    <h2 class="medium-headline">From Blueprint to Build</h2>
+    <div class="halves">
+        <div class="card-accent">
+            <h3>OpenAI's Symphony</h3>
+            <p>A published specification for autonomous software engineering daemons — a blueprint for an AI-driven factory that picks up issues, codes solutions, and opens pull requests without human intervention in the execution loop.</p>
+        </div>
+        <div class="card">
+            <h3>Amphony</h3>
+            <p>A full reimplementation of that spec using Amplifier as the runtime engine. Not a fork. Not a wrapper. A ground-up build that replaces three core dependencies with Amplifier-native equivalents — built in 7 days by a single engineer.</p>
+        </div>
+    </div>
+    <div class="body-text mt-lg">
+        The original spec assumed Linear, Codex, and in-memory state. Amphony swaps all three — proving the spec itself is runtime-agnostic when the architecture is right.
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 3 — Three Substitutions
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-3">
+    <div class="section-label">Architecture</div>
+    <h2 class="medium-headline">Three Substitutions</h2>
+    <div class="table-wrap mt-md">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>OpenAI's Symphony</th>
+                    <th>Amphony Replacement</th>
+                    <th>Why It's Better</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Linear issue tracker</td>
+                    <td><span class="accent-word">GitHub Issues</span> — labels as state machine</td>
+                    <td>Labels map directly to spec states; free for any repo; native PR linking</td>
+                </tr>
+                <tr>
+                    <td>Codex subprocess<br><span class="small-text" style="opacity:0.65;">(JSON-RPC / stdio)</span></td>
+                    <td><span class="accent-word">In-process Amplifier sessions</span></td>
+                    <td>No subprocess marshalling; full session control, recipes, skills, context</td>
+                </tr>
+                <tr>
+                    <td>In-memory state store</td>
+                    <td><span class="green-word">DoltDB</span> — git for data</td>
+                    <td>Every mutation is a versioned commit; time-travel queries; crash-safe</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="body-text mt-lg">
+        Each substitution is a strict improvement: more observable, more durable, and more capable than the original dependency.
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 4 — By The Numbers
+═══════════════════════════════════════════════════════════ -->
+<div class="slide center" id="slide-4">
+    <div class="section-label">By The Numbers</div>
+    <div class="velocity-grid mt-sm" style="grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 900px;">
+        <div class="velocity-stat" style="padding: 12px 8px;">
+            <div style="font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: var(--accent); line-height: 1;">2.7k</div>
+            <div class="velocity-label">Lines of source</div>
+        </div>
+        <div class="velocity-stat" style="padding: 12px 8px;">
+            <div style="font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: var(--accent); line-height: 1;">6k</div>
+            <div class="velocity-label">Lines of tests</div>
+        </div>
+        <div class="velocity-stat" style="padding: 12px 8px;">
+            <div style="font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: var(--accent); line-height: 1;">358</div>
+            <div class="velocity-label">Test functions</div>
+        </div>
+        <div class="velocity-stat" style="padding: 12px 8px;">
+            <div style="font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: var(--accent); line-height: 1;">17/17</div>
+            <div class="velocity-label">Spec items covered</div>
+        </div>
+        <div class="velocity-stat" style="padding: 12px 8px;">
+            <div style="font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: var(--accent); line-height: 1;">15+</div>
+            <div class="velocity-label">PRs created</div>
+        </div>
+        <div class="velocity-stat" style="padding: 12px 8px;">
+            <div style="font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: var(--accent); line-height: 1;">120+</div>
+            <div class="velocity-label">AI sessions used</div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 5 — The Autonomous Loop
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-5">
+    <div class="section-label">How It Works</div>
+    <h2 class="medium-headline">The Autonomous Loop</h2>
+    <div class="pipeline mt-md">
+        <div class="pipe-step">Poll</div>
+        <div class="pipe-arrow">&#8594;</div>
+        <div class="pipe-step">Dispatch</div>
+        <div class="pipe-arrow">&#8594;</div>
+        <div class="pipe-step">Reconcile</div>
+        <div class="pipe-arrow">&#8594;</div>
+        <div class="pipe-step">Retry</div>
+        <div class="pipe-arrow">&#8594;</div>
+        <div class="pipe-step">Complete</div>
+    </div>
+    <div class="thirds mt-md" style="--gap-grid:clamp(10px,1.8vw,18px);">
+        <div class="card">
+            <h4>&#128269; Poll</h4>
+            <p>Every 30 seconds, scan GitHub Issues for eligible work. Apply the 7-gate eligibility check before advancing any issue.</p>
+        </div>
+        <div class="card">
+            <h4>&#128640; Dispatch</h4>
+            <p>Claim the issue by labeling it <span class="mono">status:in-progress</span>. Spin up an isolated workspace. Launch an Amplifier session with the rendered WORKFLOW.md prompt.</p>
+        </div>
+        <div class="card">
+            <h4>&#128260; Reconcile</h4>
+            <p>After each cycle, compare in-memory worker state against DoltDB truth. Detect stale runs, requeue retries, update labels to match actual state.</p>
+        </div>
+        <div class="card">
+            <h4>&#9851; Retry</h4>
+            <p>Failed runs enter a backoff queue. DoltDB stores retry counts and last-attempt timestamps. The reconciler requeues eligible retries on the next heartbeat.</p>
+        </div>
+        <div class="card">
+            <h4>&#9989; Complete</h4>
+            <p>Agent commits work, creates a branch, opens a PR via <span class="mono">gh pr create</span>, updates the issue label to <span class="mono">status:done</span>, stores the PR URL in DoltDB.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 6 — WORKFLOW.md
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-6">
+    <div class="section-label">Configuration</div>
+    <h2 style="font-size: clamp(22px, 4vw, 32px); font-weight: 700; line-height: 1.1; margin-bottom: var(--space-sm);">WORKFLOW.md &#8212; One File to Rule Them All</h2>
+    <p class="body-text mb-sm" style="font-size: var(--fs-small);">A single <span class="mono">WORKFLOW.md</span> with YAML frontmatter + Liquid prompt template configures the entire factory. Hot-reloaded on every dispatch cycle &#8212; change it while the service is running.</p>
+    <div class="halves mt-sm" style="align-items: stretch;">
+        <div style="display:flex;flex-direction:column;gap:var(--space-xs);">
+            <p style="font-size:var(--fs-label);font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text-tertiary);">YAML Frontmatter</p>
+            <div class="code-block" style="flex:1;font-size:clamp(10px,1.5vw,12px);line-height:1.5;padding:var(--space-sm);"><span class="code-comment">---  parsed by orchestrator on every cycle</span>
+<span class="code-key">tracker</span>:
+  <span class="code-key">type</span>: <span class="code-val">github</span>
+  <span class="code-key">repo</span>: <span class="code-val">owner/repo</span>
+  <span class="code-key">polling_interval</span>: <span class="code-val">30</span>  <span class="code-comment"># seconds</span>
+
+<span class="code-key">agent</span>:
+  <span class="code-key">runtime</span>: <span class="code-val">amplifier</span>
+  <span class="code-key">max_turns</span>: <span class="code-val">1</span>
+  <span class="code-key">turn_timeout_ms</span>: <span class="code-val">1800000</span>  <span class="code-comment"># 30 min</span>
+
+<span class="code-key">state_store</span>:
+  <span class="code-key">type</span>: <span class="code-val">doltdb</span>
+  <span class="code-key">db_path</span>: <span class="code-val">/var/db/amphony</span>
+---</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--space-xs);">
+            <p style="font-size:var(--fs-label);font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--green);">Liquid Prompt Template</p>
+            <div class="code-block" style="border-left-color:var(--accent);flex:1;font-size:clamp(10px,1.5vw,12px);line-height:1.5;padding:var(--space-sm);"><span class="code-comment"># rendered per issue at dispatch time</span>
+You are an expert software engineer.
+Resolve issue #<span class="code-val">{{issue.number}}</span>: <span class="code-val">{{issue.title}}</span>
+
+Acceptance criteria:
+<span class="code-val">{{issue.body}}</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 7 — Seven Gates
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-7">
+    <div class="section-label">Dispatch Logic</div>
+    <h2 class="medium-headline">Seven Gates to Dispatch</h2>
+    <p class="body-text mb-md">All seven conditions must pass before an agent is dispatched. One failure = skip and evaluate the next issue.</p>
+    <div class="halves" style="--gap-grid:clamp(12px,2vw,20px);">
+        <div class="gate-list">
+            <div class="gate-item">
+                <div class="gate-number">1</div>
+                <div class="gate-text"><strong style="color:var(--text-primary)">Required fields present</strong> &#8212; issue has id, identifier, title, and state; malformed issues are skipped silently</div>
+            </div>
+            <div class="gate-item">
+                <div class="gate-number">2</div>
+                <div class="gate-text"><strong style="color:var(--text-primary)">Active state</strong> &#8212; state maps to an active label (e.g. <span class="mono">status:todo</span>); terminal states are never re-dispatched</div>
+            </div>
+            <div class="gate-item">
+                <div class="gate-number">3</div>
+                <div class="gate-text"><strong style="color:var(--text-primary)">Not already running</strong> &#8212; no live worker thread holds this issue; prevents duplicate agents on the same issue</div>
+            </div>
+            <div class="gate-item">
+                <div class="gate-number">4</div>
+                <div class="gate-text"><strong style="color:var(--text-primary)">Not already claimed</strong> &#8212; label is not yet <span class="mono">status:in-progress</span>; guards against race conditions across restarts</div>
+            </div>
+        </div>
+        <div class="gate-list">
+            <div class="gate-item">
+                <div class="gate-number">5</div>
+                <div class="gate-text"><strong style="color:var(--text-primary)">Global concurrency slots available</strong> &#8212; total running workers &lt; configured <span class="mono">max_workers</span> ceiling</div>
+            </div>
+            <div class="gate-item">
+                <div class="gate-number">6</div>
+                <div class="gate-text"><strong style="color:var(--text-primary)">Per-state concurrency slots available</strong> &#8212; workers in this state &lt; configured <span class="mono">per_state_max</span> limit</div>
+            </div>
+            <div class="gate-item">
+                <div class="gate-number">7</div>
+                <div class="gate-text"><strong style="color:var(--text-primary)">No non-terminal blockers</strong> &#8212; all issues in <span class="mono">depends_on</span> are in terminal states; respects dependency ordering</div>
+            </div>
+            <div class="card-accent" style="margin-top:auto;">
+                <h4 style="color:var(--accent);margin-bottom:var(--space-xs);">&#9888; All 7 must pass</h4>
+                <p>A single failed gate causes the issue to be skipped. The orchestrator moves to the next candidate immediately.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 8 — Self-Healing
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-8">
+    <div class="section-label">Reliability</div>
+    <h2 class="medium-headline">Self-Healing</h2>
+    <p class="body-text mb-lg" style="color:var(--green);">No error crashes the service.</p>
+    <div class="heal-grid">
+        <div class="heal-card">
+            <div class="heal-icon">&#127760;</div>
+            <div class="heal-cause">GitHub API fails</div>
+            <div class="heal-effect">Skip dispatch cycle, keep all running workers alive. Retry automatically on the next poll interval.</div>
+        </div>
+        <div class="heal-card">
+            <div class="heal-icon">&#128451;</div>
+            <div class="heal-cause">DoltDB fails</div>
+            <div class="heal-effect">Fall back to in-memory run tracking. The service continues operating; only durability degrades.</div>
+        </div>
+        <div class="heal-card">
+            <div class="heal-icon">&#128196;</div>
+            <div class="heal-cause">Config parse fails</div>
+            <div class="heal-effect">Keep last-known-good WORKFLOW.md in memory. Log the parse error. Never halt the orchestrator.</div>
+        </div>
+        <div class="heal-card">
+            <div class="heal-icon">&#129693;</div>
+            <div class="heal-cause">Hook fails</div>
+            <div class="heal-effect">before_run / after_run failures are fatal to that run only. Cleanup hooks are best-effort; won't block others.</div>
+        </div>
+        <div class="heal-card">
+            <div class="heal-icon">&#128165;</div>
+            <div class="heal-cause">Process crash &amp; restart</div>
+            <div class="heal-effect">On startup, reads all in-progress runs from DoltDB, reschedules retries, reconciles GitHub labels.</div>
+        </div>
+        <div class="heal-card">
+            <div class="heal-icon">&#9203;</div>
+            <div class="heal-cause">Agent timeout</div>
+            <div class="heal-effect">turn_timeout fires after 30 min. Run recorded as failed in DoltDB. Enters retry queue with exponential backoff.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 9 — The Factory Floor (Dashboard)
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-9">
+    <div class="section-label">Observability</div>
+    <h2 class="medium-headline">The Factory Floor</h2>
+    <div class="screenshot-wrap mb-md">
+        <img src="amphony-dashboard.png" alt="Amphony web dashboard showing live worker status, issue queue, PR links, and real-time event log" loading="lazy">
+    </div>
+    <div class="thirds mt-md">
+        <div class="card">
+            <h4>&#127760; Web Dashboard</h4>
+            <p>Auto-refreshes every 2 seconds. Live worker status, run history, PR links with review notifications, issue creation form, and real-time event log with humanized messages.</p>
+        </div>
+        <div class="card">
+            <h4>&#128247; Terminal TUI</h4>
+            <p>ANSI box-drawing characters render a compact factory-floor view &#8212; workers, queue depth, and recent events &#8212; without leaving the terminal.</p>
+        </div>
+        <div class="card">
+            <h4>&#128268; HTTP API</h4>
+            <p>JSON endpoints at <span class="mono">/api/runs</span>, <span class="mono">/api/workers</span>, and <span class="mono">/api/events</span> for integration with external tooling, scripts, or CI pipelines.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 10 — Zero to PR
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-10">
+    <div class="section-label">The Pipeline</div>
+    <h2 class="medium-headline">Zero to PR</h2>
+    <p class="body-text mb-lg">The complete lifecycle of a unit of work &#8212; from human intent to reviewable code, without human intervention in between.</p>
+    <div class="steps-row">
+        <div class="step-card" style="border-color:rgba(255,255,255,0.20);background:var(--surface-2);">
+            <span class="step-icon">&#128221;</span>
+            <span class="step-label" style="color:var(--text-primary);font-weight:600;">&#128100; Create<br>Issue</span>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card">
+            <span class="step-icon">&#127991;</span>
+            <span class="step-label">Label <span class="mono" style="font-size:clamp(9px,1.4vw,11px)">status:todo</span></span>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card">
+            <span class="step-icon">&#128065;</span>
+            <span class="step-label">Amphony polls &amp; picks up</span>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card">
+            <span class="step-icon">&#129302;</span>
+            <span class="step-label">Dispatches AI agent</span>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card">
+            <span class="step-icon">&#128187;</span>
+            <span class="step-label">Agent codes in isolated workspace</span>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card">
+            <span class="step-icon">&#127807;</span>
+            <span class="step-label">Creates branch &amp; commits</span>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card">
+            <span class="step-icon">&#128256;</span>
+            <span class="step-label">Opens PR via <span class="mono" style="font-size:clamp(9px,1.4vw,11px)">gh pr create</span></span>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card">
+            <span class="step-icon">&#9989;</span>
+            <span class="step-label">Label updated to <span class="mono" style="font-size:clamp(9px,1.4vw,11px)">status:done</span></span>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card" style="border-color:var(--accent-border);background:var(--surface-2);border-width:2px;">
+            <span class="step-icon">&#128064;</span>
+            <span class="step-label" style="color:var(--accent);font-weight:600;">&#128100; Review<br>the PR</span>
+        </div>
+    </div>
+    <div class="card-accent mt-md" style="display:flex;align-items:center;gap:var(--space-md);">
+        <span style="font-size:clamp(24px,4vw,36px);">&#128100;</span>
+        <p class="body-text">The only human steps are the <strong style="color:var(--text-primary)">bookends</strong>: write the issue, review the PR. The 7 autonomous steps in between run 24/7 without intervention.</p>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 11 — Git for Your AI's Work (DoltDB)
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-11">
+    <div class="section-label">State Store</div>
+    <h2 class="medium-headline">Git for Your AI's Work</h2>
+    <p class="body-text mb-md">DoltDB stores every state mutation as a versioned commit. The complete history of every issue is auditable, time-travelable, and diff-able &#8212; like <span class="mono">git log</span> for your AI's decisions.</p>
+    <div class="commit-log mb-md">
+        <div class="commit-row">
+            <span class="commit-hash">a3f2b1c</span>
+            <span class="commit-msg">dispatch owner/repo#42 run 9e1f2a3d-0c4b</span>
+        </div>
+        <div class="commit-row">
+            <span class="commit-hash">b7c9d2e</span>
+            <span class="commit-msg">succeeded owner/repo#42 run 9e1f2a3d-0c4b</span>
+        </div>
+        <div class="commit-row">
+            <span class="commit-hash">c1d4e5f</span>
+            <span class="commit-msg">pr: owner/repo#42 &#8594; https://github.com/owner/repo/pull/7</span>
+        </div>
+        <div class="commit-row">
+            <span class="commit-hash">d8a3b2c</span>
+            <span class="commit-msg">dispatch owner/repo#51 run f7e3b2a1-5d8c</span>
+        </div>
+        <div class="commit-row">
+            <span class="commit-hash">e2f1c9d</span>
+            <span class="commit-msg">failed owner/repo#51 run f7e3b2a1-5d8c (timeout)</span>
+        </div>
+        <div class="commit-row">
+            <span class="commit-hash">f4a8d7e</span>
+            <span class="commit-msg">retry owner/repo#51 attempt=2 run 1b2c3d4e-9f0a</span>
+        </div>
+    </div>
+    <div class="code-block"><span class="code-comment">-- Time-travel query: what was running 10 commits ago?</span>
+SELECT issue_id, state, run_id, pr_url
+FROM runs <span class="code-key">AS OF</span> <span class="code-val">'HEAD~10'</span>
+WHERE state = <span class="code-val">'in_progress'</span>;</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 12 — The Software Factory (metaphor)
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-12">
+    <div class="section-label">The Metaphor</div>
+    <h2 class="medium-headline">The Software Factory</h2>
+    <p class="body-text mt-sm mb-md">Amphony maps directly onto the physical factory model. Every element of the metaphor has a working implementation &#8212; the analogy is not decorative, it's structural.</p>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Physical Factory</th>
+                    <th>Amphony Equivalent</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Work orders</td><td>GitHub Issues</td></tr>
+                <tr><td>Factory blueprint</td><td>WORKFLOW.md</td></tr>
+                <tr><td>Assembly workers</td><td>Amplifier AI agents</td></tr>
+                <tr><td>Workstations</td><td>Isolated workspace directories</td></tr>
+                <tr><td>Quality inspection</td><td>Pull Request review</td></tr>
+                <tr><td>Production log</td><td>DoltDB audit trail</td></tr>
+                <tr><td>Floor monitor</td><td>Web Dashboard + Terminal TUI</td></tr>
+                <tr><td>Shift manager</td><td>The Orchestrator</td></tr>
+                <tr><td>Conveyor belt</td><td>Poll loop (30-second heartbeat)</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 13 — The Human Role
+═══════════════════════════════════════════════════════════ -->
+<div class="slide center" id="slide-13">
+    <div class="section-label">Human in the Loop</div>
+    <div class="big-quote mt-md">
+        <em>AI proposes.</em><br>Human decides.
+    </div>
+    <p class="subhead" style="max-width:min(660px,90vw);margin-top:var(--space-md);">
+        The human is the quality inspector, not the assembly line worker. Every PR waits for your review. You decide what ships.
+    </p>
+    <div class="halves mt-xl" style="max-width:min(720px,90vw);text-align:left;">
+        <div class="card-accent">
+            <h3>What the AI handles</h3>
+            <p>Picking up issues, writing code, running tests, creating branches, drafting PRs, labeling issues, updating state &#8212; the entire execution loop, 24/7.</p>
+        </div>
+        <div class="card-green">
+            <h3>What you handle</h3>
+            <p>Writing the issue with clear acceptance criteria. Reviewing the PR. Deciding whether to merge. Setting the quality bar. Owning the outcome.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 14 — What's Next
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-14">
+    <div class="section-label">Roadmap</div>
+    <h2 class="medium-headline">What's Next</h2>
+    <div class="thirds mt-md">
+        <div class="card">
+            <h3>&#127981; Multi-Repo Orchestration</h3>
+            <p>A single Amphony instance managing work queues across multiple repositories, with cross-repo dependency resolution built in.</p>
+        </div>
+        <div class="card">
+            <h3>&#9889; Priority Scheduling</h3>
+            <p>Weighted issue priority for smarter dispatch ordering &#8212; urgent issues jump the queue, low-priority work fills idle capacity.</p>
+        </div>
+        <div class="card">
+            <h3>&#128176; Token Budget Management</h3>
+            <p>Per-issue and per-day token budget caps. Cost visibility baked into the dashboard and the DoltDB audit trail.</p>
+        </div>
+        <div class="card">
+            <h3>&#9851; Enhanced Retry Strategies</h3>
+            <p>Exponential backoff with jitter, per-error-type retry policies, and configurable max-attempt limits directly in WORKFLOW.md frontmatter.</p>
+        </div>
+        <div class="card">
+            <h3>&#128279; Ecosystem Integration</h3>
+            <p>Webhook receivers for CI/CD events, Slack/Teams notifications for PR opens, and exportable Dolt snapshots for external audit trails.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SLIDE 15 — Sources & Methodology
+═══════════════════════════════════════════════════════════ -->
+<div class="slide" id="slide-15" style="padding-top:clamp(42px,7vw,80px);padding-bottom:clamp(90px,12vw,110px);">
+    <div class="section-label">Sources &amp; Methodology</div>
+    <h2 style="font-size:clamp(22px,4vw,38px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;color:var(--text-primary);margin-bottom:var(--space-sm);">Research Methodology</h2>
+    <div class="halves mt-sm">
+        <div>
+            <p class="small-text mb-md"><strong style="color:var(--text-primary)">Data as of:</strong> March 12, 2026 &nbsp;&#183;&nbsp; <strong style="color:var(--text-primary)">Status:</strong> Active</p>
+            <p class="small-text mb-sm"><strong style="color:var(--text-primary)">Commands run against /Users/samule/repo/symphony:</strong></p>
+            <ul class="sources-list">
+                <li><code>git log --oneline</code> &#8212; 49 commits found (Mar 5&#8211;12, 2026)</li>
+                <li><code>git log --format="%an" | sort -u</code> &#8212; 1 contributor: Samuel Lee</li>
+                <li><code>find . -name "*.py" | xargs wc -l</code> &#8212; 13,264 total Python lines (src + tests combined)</li>
+                <li><code>find . -name "test_*.py" | xargs wc -l</code> &#8212; 8,952 lines in test files (raw wc -l)</li>
+                <li><code>grep -r "^def test_"</code> &#8212; 162 test function definitions found by grep; author's count of 358 includes parametrized test expansions</li>
+                <li><code>SPEC.md + CONFORMANCE.md</code> &#8212; 17 spec items documented as covered</li>
+            </ul>
+        </div>
+        <div>
+            <p class="small-text mb-sm"><strong style="color:var(--text-primary)">Additional sources:</strong></p>
+            <ul class="sources-list">
+                <li>Repository: <code>/Users/samule/repo/symphony</code></li>
+                <li>Spec: <code>OpenAI Symphony SPEC.md (Draft v1)</code></li>
+                <li>120+ Amplifier sessions used during construction (Mar 5&#8211;12, 2026)</li>
+                <li>Dashboard screenshot: live instance at <code>100.66.81.45:8080</code></li>
+                <li>Build window: exactly 7 days (Mar 5 first commit &#8594; Mar 12 final commit)</li>
+            </ul>
+            <p class="small-text mt-md"><strong style="color:var(--text-primary)">Methodology note:</strong> &#8220;2,700 source lines&#8221; and &#8220;6,000 test lines&#8221; are author-reported figures that exclude blank lines and comments. Raw <code>wc -l</code> totals are 4,312 (source) and 8,952 (tests) respectively.</p>
+        </div>
+    </div>
+    <div class="small-text mt-md">
+        Primary contributor: Samuel Lee (100% of 49 commits) &nbsp;&#183;&nbsp; Build window: March 5&#8211;12, 2026 &nbsp;&#183;&nbsp; Inspired by OpenAI Symphony Spec (Draft v1)
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════════ -->
+<div class="nav" id="nav"></div>
+<div class="slide-counter" id="counter"></div>
+<a href="https://ramparte.github.io/amplifier-stories/" class="more-stories">More Amplifier Stories</a>
+
+<script>
+(function () {
+    var slides  = document.querySelectorAll('.slide');
+    var current = 0;
+
+    function showSlide(n) {
+        slides[current].classList.remove('active');
+        slides[current].scrollTop = 0;
+        current = ((n % slides.length) + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        slides[current].scrollTop = 0;
+        updateNav();
+    }
+
+    function updateNav() {
+        var nav     = document.getElementById('nav');
+        var counter = document.getElementById('counter');
+        nav.innerHTML = '';
+        for (var i = 0; i < slides.length; i++) {
+            (function(idx) {
+                var dot = document.createElement('div');
+                dot.className = 'nav-dot' + (idx === current ? ' active' : '');
+                dot.setAttribute('aria-label', 'Slide ' + (idx + 1));
+                dot.onclick = function () { showSlide(idx); };
+                nav.appendChild(dot);
+            })(i);
+        }
+        counter.textContent = (current + 1) + ' / ' + slides.length;
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+            e.preventDefault(); showSlide(current + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault(); showSlide(current - 1);
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.nav'))          return;
+        if (e.target.closest('a'))             return;
+        if (e.target.closest('.more-stories')) return;
+        if (e.clientX > window.innerWidth / 2) showSlide(current + 1);
+        else showSlide(current - 1);
+    });
+
+    var touchStartX = 0, touchStartY = 0;
+    var THRESHOLD   = 50;
+
+    document.addEventListener('touchstart', function (e) {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', function (e) {
+        var dx = touchStartX - e.changedTouches[0].screenX;
+        var dy = Math.abs(touchStartY - e.changedTouches[0].screenY);
+        if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > dy) {
+            if (dx > 0) showSlide(current + 1);
+            else        showSlide(current - 1);
+        }
+    }, { passive: true });
+
+    updateNav();
+})();
+</script>
+</body>
+</html>
