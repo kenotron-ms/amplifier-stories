@@ -548,7 +548,7 @@ hr.div {
 
 <!-- Nav dots -->
 <div id="nav-dots"></div>
-<div id="nav-hint">← → to navigate</div>
+<div id="nav-hint">click or ← → to navigate</div>
 
 <div class="presentation" id="presentation">
 
@@ -1671,6 +1671,12 @@ document.addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
   if (Math.abs(dx) > 60) { dx < 0 ? next() : prev(); }
 }, { passive: true });
+
+// Click left half = prev, right half = next
+document.addEventListener('click', e => {
+  if (e.target.closest('#nav-dots, #nav-hint')) return;
+  e.clientX < window.innerWidth / 2 ? prev() : next();
+});
 </script>
 </body>
 </html>
